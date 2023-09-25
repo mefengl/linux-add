@@ -1,11 +1,11 @@
 ---
 - name: Setup Linux development environment for Rust and Substrate
   hosts: all
-  become: yes
 
   tasks:
-    # Install essential packages
+    # Install essential packages (requires sudo)
     - name: Install required packages
+      become: yes
       apt:
         name:
           - build-essential
@@ -16,16 +16,18 @@
           - protobuf-compiler
         state: present
 
-    # Install Rust
+    # Download rustup script
     - name: Download rustup script
       get_url:
         url: "https://sh.rustup.rs"
         dest: "/tmp/rustup.sh"
         mode: '0777'
 
+    # Install Rust
     - name: Install Rust
-      shell: sh /tmp/rustup.sh -s -- -y
+      shell: sh -s /tmp/rustup.sh -- -y
 
+    # Source cargo env
     - name: Source cargo env
       shell: source $HOME/.cargo/env
       args:
