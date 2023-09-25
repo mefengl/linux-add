@@ -22,15 +22,14 @@
 
     # Source cargo env
     - name: Source cargo env
-      shell: source $HOME/.cargo/env
-      args:
-        executable: /bin/bash
+      shell: echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
 
     # Verify Rust installation
     - name: Verify Rust installation
-      shell: rustc --version
+      shell: source $HOME/.cargo/env && rustc --version
       register: rustc_output
-      ignore_errors: true
+      args:
+        executable: /bin/bash
 
     - name: Show rustc version
       debug:
@@ -38,14 +37,22 @@
 
     # Configure Rust toolchain
     - name: Set default toolchain to stable
-      shell: rustup default stable
+      shell: source $HOME/.cargo/env && rustup default stable
+      args:
+        executable: /bin/bash
 
     - name: Update Rust
-      shell: rustup update
+      shell: source $HOME/.cargo/env && rustup update
+      args:
+        executable: /bin/bash
 
     # Add nightly toolchain and wasm target
     - name: Add nightly toolchain
-      shell: rustup update nightly
+      shell: source $HOME/.cargo/env && rustup update nightly
+      args:
+        executable: /bin/bash
 
     - name: Add wasm target
-      shell: rustup target add wasm32-unknown-unknown --toolchain nightly
+      shell: source $HOME/.cargo/env && rustup target add wasm32-unknown-unknown --toolchain nightly
+      args:
+        executable: /bin/bash
