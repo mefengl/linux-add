@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install ansible
+      package:
+        name: ansible
+        state: present
+...

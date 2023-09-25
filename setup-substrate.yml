@@ -1,0 +1,56 @@
+---
+- name: Setup Linux development environment for Rust and Substrate
+  hosts: all
+  become: yes
+
+  tasks:
+    # Install essential packages
+    - name: Install required packages
+      apt:
+        name:
+          - build-essential
+          - clang
+          - curl
+          - git
+          - libssl-dev
+          - protobuf-compiler
+        state: present
+
+    # Install Rust
+    - name: Download rustup script
+      get_url:
+        url: "https://sh.rustup.rs"
+        dest: "/tmp/rustup.sh"
+        mode: '0777'
+
+    - name: Install Rust
+      shell: sh /tmp/rustup.sh -s -- -y
+
+    - name: Source cargo env
+      shell: source $HOME/.cargo/env
+      args:
+        executable: /bin/bash
+
+    # Verify Rust installation
+    - name: Verify Rust installation
+      shell: rustc --version
+      register: rustc_output
+      ignore_errors: true
+
+    - name: Show rustc version
+      debug:
+        var: rustc_output.stdout_lines
+
+    # Configure Rust toolchain
+    - name: Set default toolchain to stable
+      shell: rustup default stable
+
+    - name: Update Rust
+      shell: rustup update
+
+    # Add nightly toolchain and wasm target
+    - name: Add nightly toolchain
+      shell: rustup update nightly
+
+    - name: Add wasm target
+      shell: rustup target add wasm32-unknown-unknown --toolchain nightly
