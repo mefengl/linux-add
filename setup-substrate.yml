@@ -16,16 +16,9 @@
           - protobuf-compiler
         state: present
 
-    # Download rustup script
-    - name: Download rustup script
-      get_url:
-        url: "https://sh.rustup.rs"
-        dest: "/tmp/rustup.sh"
-        mode: '0777'
-
     # Install Rust
     - name: Install Rust
-      shell: sh -s /tmp/rustup.sh -- -y
+      shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
     # Source cargo env
     - name: Source cargo env
